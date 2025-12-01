@@ -39,7 +39,7 @@ WITH base AS (
         k.question_id,
         e.evaluation_score,
         e.max_score
-    FROM analytics.fact_evaluation_by_question e
+    FROM analytics.fact_evaluation_by_room e
     JOIN analytics.dim_evaluation_question_map k
       ON e.category_name  = k.category_name
      AND e.question_index = k.question_index
