@@ -67,4 +67,33 @@ and quality program reporting.
 ## Data Model Flow
 
 The SQL models follow a simple but realistic data-warehouse pattern:
+Source System → Standardized Evaluation View → Question Mapping → Pivoted Form
+
+
+1. **Standardize** raw question-level data  
+2. **Map** categories and question indices into stable identifiers  
+3. **Pivot** into an evaluation-wide format  
+4. **Score** each evaluation using transformed fields  
+
+This showcases how QA datasets can be modeled end-to-end for reporting.
+
+---
+
+## Technology
+
+All queries are written using **Snowflake SQL**, including:
+- CTEs (`WITH` clauses)  
+- Conditional aggregation  
+- Row numbering and dimension mapping  
+- Pivot-style `CASE` logic for wide-format transformation  
+- Warehouse-style naming conventions (`fact_`, `dim_`, `mart_`)
+
+---
+
+## Notes
+
+- All schemas, tables, and field names have been anonymized.  
+- No customer, employee, or internal business data is present.  
+- Examples are intended strictly to demonstrate SQL modeling practices.
+
 
