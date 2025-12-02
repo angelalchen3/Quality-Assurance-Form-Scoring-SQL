@@ -51,7 +51,7 @@ even if the source system uses multiple categories or question indices.
 
 ---
 
-### **3. `evaluation_pivot_form_a.sql`**
+### **3. `evaluation_pivot_lost_stolen.sql`**
 Produces a wide, evaluation-level dataset with:
 
 - Columns `q1` through `q16` representing each scored question  
