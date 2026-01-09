@@ -1,103 +1,39 @@
--- evaluation_by_room_view.sql
+-- qa_evaluation_questions_v.sql
 -- Purpose:
---   Create a standardized view exposing evaluation-level QA data.
---   All schemas, object names, and fields are anonymized for portfolio use.
+--   Portfolio example: standardize question-level QA evaluations into an analytics-ready view.
+--   Synthetic schema + placeholder fields; illustrative only.
 
-CREATE OR REPLACE VIEW analytics.mart.evaluation_by_room (
-    load_timestamp,
-    source_filename,
-    evaluation_id,
-    interaction_id,
-    evaluation_date,
-    evaluation_form,
-    category_index,
-    evaluator_username,
-    evaluation_timestamp,
-    question_label,
-    category_name,
-    customer_id,
-    evaluation_score,
-    evaluator_comments,
-    category_weight,
-    agent_name,
-    agent_division,
-    agent_accessible_flag,
-    queue_name,
-    queue_division,
-    evaluation_status,
-    coaching_status,
-    team_name,
-    question_index,
-    question_tag_list,
-    auto_fail_flag,
-    question_text,
-    question_max_score,
-    media_type,
-    max_score,
-    avg_score,
-    evaluation_count,
-    score_percent,
-    supervisor_score_in_progress,
-    supervisor_score_completed,
-    max_question_score,
-    adjusted_score_0_100,
-    adjusted_score_lt_100,
-    total_score,
-    adjusted_score_gt_0,
-    avg_in_progress_score,
-    avg_completed_score,
-    coached_percent,
-    coached_flag,
-    in_progress_count,
-    completed_count,
-    supervisor_score
-) AS
+CREATE OR REPLACE VIEW portfolio_mart.qa_evaluation_questions_v AS
 SELECT
-    load_datetime            AS load_timestamp,
-    file_name                AS source_filename,
+    -- lineage
+    load_datetime                         AS load_ts,
+    file_name                             AS source_file,
+
+    -- identifiers (use IDs, not names)
     evaluation_id,
     interaction_id,
-    TO_DATE(evaluation_date) AS evaluation_date,
+    evaluator_id,
+    agent_id,
+    queue_id,
+
+    -- timing
+    TO_DATE(evaluation_date)              AS evaluation_date,
+    evaluation_timestamp                  AS evaluation_ts,
+
+    -- form/question metadata
     evaluation_form,
-    category_index,
-    evaluator_username,
-    evaluation_timestamp,
-    question_label,
     category_name,
-    customer_id,
-    evaluation_score,
-    comments                 AS evaluator_comments,
-    category_weight,
-    agent_name,
-    agent_division,
-    agent_accessible_flag,
-    queue_name,
-    queue_division,
-    evaluation_status,
-    coaching_status,
-    team_name,
+    category_index,
     question_index,
-    question_tag_list,
-    auto_fail_flag,
+    question_label,
     question_text,
-    question_max_score,
-    media_type,
-    max_score,
-    avg_score,
-    evaluation_count,
-    score_percent,
-    supervisor_score_in_progress,
-    supervisor_score_completed,
-    max_question_score,
-    adjusted_score_0_100,
-    adjusted_score_lt_100,
-    total_score,
-    adjusted_score_gt_0,
-    avg_in_progress_score,
-    avg_completed_score,
-    coached_percent,
-    coached_flag,
-    in_progress_count,
-    completed_count,
-    supervisor_score
-FROM analytics.source_evaluation_by_room;
+
+    -- scoring
+    TRY_TO_NUMBER(evaluation_score)       AS score,
+    TRY_TO_NUMBER(question_max_score)     AS question_max_score,
+
+    -- optional flags (keep generic)
+    IFF(comments IS NOT NULL, 1, 0)       AS has_comment_flag,
+    IFF(auto_fail_flag = TRUE, 1, 0)      AS auto_fail_flag
+
+FROM portfolio_raw.qa_evaluation_questions_src;
